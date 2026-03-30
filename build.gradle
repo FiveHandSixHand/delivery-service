@@ -34,6 +34,7 @@ dependencies {
 //	eureka server 등록할 때 사용 권장
 //	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation 'com.fhsh.daitda:common:0.0.1'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -49,4 +50,29 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+def env = [:]
+def envFile = rootProject.file(".env")
+
+if (envFile.exists()) {
+	envFile.eachLine { line ->
+		if (line && !line.startsWith("#") && line.contains("=")) {
+			def (key, value) = line.split("=", 2)
+			env[key.trim()] = value.trim()
+		}
+	}
+}
+
+repositories {
+	mavenCentral()
+
+	maven {
+		name = "GitHubPackages"
+		url = uri("https://maven.pkg.github.com/FiveHandSixHand/common-service")
+		credentials {
+			username = env["GITHUB_USERNAME"]
+			password = env["GITHUB_TOKEN"]
+		}
+	}
 }
