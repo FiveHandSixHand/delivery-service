@@ -1,6 +1,8 @@
-package com.fhsh.daitda.domain;
+package com.fhsh.daitda.domain.entity;
 
-import com.fhsh.daitda.domain.status.DeliveryStatus;
+import com.fhsh.daitda.domain.BaseEntity;
+import com.fhsh.daitda.domain.BaseUserEntity;
+import com.fhsh.daitda.domain.enums.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,12 +15,10 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "p_delivery")
-public class Delivery {
+public class Delivery extends BaseEntity {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private UUID orderId;
@@ -27,7 +27,7 @@ public class Delivery {
     @Column(name = "status", nullable = false, length = 20)
     private DeliveryStatus status = DeliveryStatus.HUB_WAITING;
 
-    private UUID sourceHubId;
+    private UUID departureHubId;
 
     private UUID destinationHubId;
 
@@ -35,9 +35,9 @@ public class Delivery {
 
     private UUID senderTenantId;
 
-    private String senderTenantAddress;
-
     private String receiverTenantAddress;
+
+    private String senderTenantAddress;
 
     private UUID receiverId;
 

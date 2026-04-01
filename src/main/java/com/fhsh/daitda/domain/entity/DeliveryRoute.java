@@ -1,12 +1,11 @@
-package com.fhsh.daitda.domain;
+package com.fhsh.daitda.domain.entity;
 
-import com.fhsh.daitda.domain.status.DeliveryRouteStatus;
-import com.fhsh.daitda.domain.status.SourceNodeType;
+import com.fhsh.daitda.domain.enums.DeliveryRouteStatus;
+import com.fhsh.daitda.domain.enums.DepartureNodeType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
@@ -17,9 +16,7 @@ import java.util.UUID;
 public class DeliveryRoute {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,9 +29,9 @@ public class DeliveryRoute {
 
     private int sequence;
 
-    private UUID sourceNodeId;
+    private UUID departureNodeId;
 
-    private SourceNodeType sourceNodeType;
+    private DepartureNodeType departureNodeType;
 
     private int duration;
 
