@@ -1,16 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/da_it_da_db
-    username: postgres_daitda
-    password: "fivesix2026!"
-    driver-class-name: org.postgresql.Driver
+    password: ${DB_PASSWORD}
 
-keycloak:
-  # Config Server의 ${KEYCLOAK_CLIENT_SECRET} 자리에 .env의 값을 넣어줍니다.
-  client-secret: ${KEYCLOAK_CLIENT_SECRET}
-
-# 로컬 실행 시에만 적용하고 싶은 추가 설정이 있다면 여기 적습니다.
+# 여기 밑에는 본인 마음대로 설정하시면 됩니다.
 logging:
   level:
     org.hibernate.SQL: DEBUG
-    com.yourproject.userservice: DEBUG
+    com.fhsh.user: DEBUG
