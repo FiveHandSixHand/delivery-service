@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -27,6 +28,9 @@ public class Delivery extends BaseUserEntity {
     @Column(name = "status", nullable = false, length = 20)
     private DeliveryStatus status = DeliveryStatus.HUB_WAITING;
 
+    @OneToMany(mappedBy = "delivery", fetch = FetchType.LAZY)
+    private List<DeliveryRoute> deliveryRoutes;
+
     private UUID departureHubId;
 
     private UUID destinationHubId;
@@ -41,5 +45,5 @@ public class Delivery extends BaseUserEntity {
 
     private UUID receiverId;
 
-    private UUID senderID;
+    private UUID senderId;
 }
