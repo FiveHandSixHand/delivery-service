@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "p_delivery")
-public class Delivery extends BaseEntity {
+public class Delivery extends BaseUserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,5 +1,6 @@
 package com.fhsh.daitda.domain.entity;
 
+import com.fhsh.daitda.domain.BaseUserEntity;
 import com.fhsh.daitda.domain.enums.DeliveryRouteStatus;
 import com.fhsh.daitda.domain.enums.DepartureNodeType;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "p_delivery_route")
-public class DeliveryRoute {
+public class DeliveryRoute extends BaseUserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
