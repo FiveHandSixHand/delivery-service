@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    password: ${DB_PASSWORD}
+
+# 여기 밑에는 본인 마음대로 설정하시면 됩니다.
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    com.fhsh.user: DEBUG
