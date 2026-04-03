@@ -1,4 +1,4 @@
-package com.fhsh.daitda.domain.exception;
+package com.fhsh.daitda.delivery.domain.exception;
 
 import com.fhsh.daitda.exception.ErrorCode;
 import lombok.Getter;

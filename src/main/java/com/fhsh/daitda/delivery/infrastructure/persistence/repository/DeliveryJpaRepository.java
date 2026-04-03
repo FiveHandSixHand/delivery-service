@@ -1,6 +1,6 @@
-package com.fhsh.daitda.infrastructure.persistence.repository;
+package com.fhsh.daitda.delivery.infrastructure.persistence.repository;
 
-import com.fhsh.daitda.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.entity.Delivery;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,9 +1,9 @@
-package com.fhsh.daitda.application.service.query;
+package com.fhsh.daitda.delivery.application.service.query;
 
-import com.fhsh.daitda.application.result.DeliveryResult;
-import com.fhsh.daitda.domain.entity.Delivery;
-import com.fhsh.daitda.domain.exception.DeliveryErrorCode;
-import com.fhsh.daitda.domain.repository.DeliveryRepository;
+import com.fhsh.daitda.delivery.application.result.DeliveryResult;
+import com.fhsh.daitda.delivery.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
+import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
 import com.fhsh.daitda.exception.BusinessException;
 import com.fhsh.daitda.exception.CommonErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class DeliveryQueryService {
         Slice<Delivery> deliveries = switch (role) {
             case "MASTER", "COMPANY_MANAGER" -> deliveryRepository.findAll(pageable);
             case "HUB_MANAGER" ->
-//                    UUID hubId = hubClient.getHubIdByManagerId(userId); TODO hub데이터 가져오기 userId 임시로 사용
+//                    UUID hubId = hubClient.getHubIdByManagerId(userId); TODO hub데이터 가져오기 userId 임시로 사용 - hub에 api요청하기
                     deliveryRepository.findByHubId(userId, pageable);
             case "DELIVERY_MANAGER" -> deliveryRepository.findByDeliveryManagerId(userId, pageable);
             default -> throw new BusinessException(CommonErrorCode.FORBIDDEN);

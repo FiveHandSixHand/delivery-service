@@ -1,9 +1,8 @@
-package com.fhsh.daitda.application.strategy.impl;
+package com.fhsh.daitda.delivery.application.strategy.impl;
 
-import com.fhsh.daitda.application.strategy.DeliverySearchStrategy;
-import com.fhsh.daitda.domain.entity.Delivery;
-import com.fhsh.daitda.domain.repository.DeliveryRepository;
-import lombok.AllArgsConstructor;
+import com.fhsh.daitda.delivery.application.strategy.DeliverySearchStrategy;
+import com.fhsh.daitda.delivery.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;

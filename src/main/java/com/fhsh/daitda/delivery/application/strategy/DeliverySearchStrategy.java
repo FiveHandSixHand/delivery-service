@@ -1,6 +1,6 @@
-package com.fhsh.daitda.application.strategy;
+ package com.fhsh.daitda.delivery.application.strategy;
 
-import com.fhsh.daitda.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.entity.Delivery;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 

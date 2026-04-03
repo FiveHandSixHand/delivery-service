@@ -1,8 +1,8 @@
-package com.fhsh.daitda.domain.entity;
+package com.fhsh.daitda.delivery.domain.entity;
 
 import com.fhsh.daitda.domain.BaseUserEntity;
-import com.fhsh.daitda.domain.enums.DeliveryRouteStatus;
-import com.fhsh.daitda.domain.enums.DepartureNodeType;
+import com.fhsh.daitda.delivery.domain.enums.DeliveryRouteStatus;
+import com.fhsh.daitda.delivery.domain.enums.DepartureNodeType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
