@@ -2,44 +2,38 @@ package com.fhsh.daitda.delivery.application.service.command;
 
 import com.fhsh.daitda.delivery.application.client.CompanyClient;
 import com.fhsh.daitda.delivery.application.client.DeliveryManagerClient;
-import com.fhsh.daitda.delivery.application.client.HubClient;
 import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
 import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
-import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class DeliveryCommandService {
 
-    private final DeliveryRepository deliveryRepository;
     private final DeliveryManagerClient deliveryManagerClient;
     private final CompanyClient companyClient;
-    private final HubClient hubClient;
+    private final DeliveryProcessor deliveryProcessor;
 
     public DeliveryCreateResult registerDelivery(DeliveryCreateCommand command) {
-        // 1. 공급업체와 수령업체 허브 정보 조회
+
+        // 공급업체와 수령업체 허브 정보 조회
+        // TODO 외부 서비스 호출 실패 시 보상 로직 필요
         CompanyHubInfo supplierHub = companyClient.getHubIdByManagerId(command.getSupplierCompanyId());
         CompanyHubInfo receiverHub = companyClient.getHubIdByManagerId(command.getReceiverCompanyId());
 
-        // 2. 배송 객체 생성 및 저장
-        Delivery delivery = Delivery.create(command, supplierHub, receiverHub);
-        deliveryRepository.save(delivery);
+        // DB 작업
+        Delivery delivery = deliveryProcessor.createAndSave(command, supplierHub, receiverHub);
 
-        // 3. 배송담당자 배정
-        UUID deliveryId = delivery.getId();
-        UUID companyDeliveryManagerId = deliveryManagerClient.assignCompanyDeliveryManager(deliveryId, receiverHub.getHubId());
+        // 담당자 배정
+        // TODO 배정 실패 시 생성된 배송 롤백 보상 로직 필요
+        UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(receiverHub.getHubId(), delivery.getId());
 
-        // 4. 배송담당자 정보 업데이트
-        delivery.assignManagers(companyDeliveryManagerId);
-
-        return DeliveryCreateResult.from(delivery);
+        // 담당자 업데이트
+        return deliveryProcessor.assignManager(delivery, managerId);
     }
 }
