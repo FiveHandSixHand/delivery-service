@@ -27,19 +27,18 @@ public class DeliveryController {
 
     @GetMapping("/{deliveryId}")
     public ResponseEntity<CommonResponse<DeliveryInfoResponse>> getDelivery(
-            @RequestHeader("X-User-Id") String userId,
+            @RequestHeader("X-User-Id") UUID userId,
             @RequestHeader("X-User-Email") String email,
-            @RequestHeader("X-User-Role") String role) {
-//        DeliveryInfoResponse response = DeliveryInfoResponse.from(deliveryQueryService.findDelivery(userId));
-//        return ResponseEntity.ok(CommonResponse.success(response));
-        return null;
+            @RequestHeader("X-User-Role") String role,
+            @PathVariable UUID deliveryId) {
+        DeliveryInfoResponse response = DeliveryInfoResponse.from(deliveryQueryService.findDelivery(deliveryId));
+        return ResponseEntity.ok(CommonResponse.success(response));
     }
 
-    // TODO User아이디 적용
     @GetMapping
     public ResponseEntity<CommonResponse<Slice<DeliveryInfoResponse>>> getDeliveries(
             @RequestHeader("X-User-Id") UUID userId,
-            @RequestHeader(value = "X-User-Role", defaultValue = "MASTER") String role, // TODO: 인증인가 개발 후 하드코딩 삭제
+            @RequestHeader(value = "X-User-Role") String role,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Slice<DeliveryInfoResponse> responses = deliveryQueryService.getDeliveries(userId, role, pageable)

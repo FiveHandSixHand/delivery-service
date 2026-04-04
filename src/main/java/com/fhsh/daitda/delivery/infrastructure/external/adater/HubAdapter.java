@@ -14,7 +14,7 @@ public class HubAdapter implements HubClient {
     private final HubFeignClient hubFeignClient;
 
     @Override
-    public Map<UUID, String> getHubIdByManagerId(UUID userId) {
+    public UUID getHubIdByManagerId(UUID userId) {
         return hubFeignClient.getHubIdByManagerId(userId);
     }
 }

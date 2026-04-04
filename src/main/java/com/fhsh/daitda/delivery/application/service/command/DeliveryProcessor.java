@@ -39,6 +39,7 @@ public class DeliveryProcessor {
     @Transactional
     public DeliveryCreateResult assignManager(Delivery delivery, UUID managerId) {
         delivery.assignManagers(managerId);
+        deliveryRepository.save(delivery);
         return DeliveryCreateResult.from(delivery);
     }
 }
