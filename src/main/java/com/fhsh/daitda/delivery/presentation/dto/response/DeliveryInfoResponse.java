@@ -21,7 +21,7 @@ public class DeliveryInfoResponse {
     private String senderTenantAddress;
     private String receiverTenantAddress;
     private UUID receiverId;
-    private UUID deliveryManagersId;
+    private UUID deliveryManagerId;
 
     public static DeliveryInfoResponse from(DeliveryResult result) {
         return new DeliveryInfoResponse(

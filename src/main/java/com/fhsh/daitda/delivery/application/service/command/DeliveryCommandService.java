@@ -30,8 +30,7 @@ public class DeliveryCommandService {
         Delivery delivery = deliveryProcessor.createAndSave(command, supplierHub, receiverHub);
 
         // 담당자 배정
-        // TODO 배정 실패 시 생성된 배송 롤백 보상 로직 필요
-        UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(receiverHub.getHubId(), delivery.getId());
+        UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHub.getHubId());
 
         // 담당자 업데이트
         return deliveryProcessor.assignManager(delivery, managerId);
