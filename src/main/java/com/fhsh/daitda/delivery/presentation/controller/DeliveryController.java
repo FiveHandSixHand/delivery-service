@@ -67,4 +67,12 @@ public class DeliveryController {
         DeliveryStatusUpdateResult result = deliveryCommandService.updateStatus(deliveryId, request.getStatus(), email);
         return ResponseEntity.ok(CommonResponse.success(DeliveryStatusUpdateResponse.from(result)));
     }
+
+    @DeleteMapping("/{deliveryId}/cancel")
+    public ResponseEntity<CommonResponse<Void>> cancelDelivery(
+            @PathVariable UUID deliveryId) {
+
+        deliveryCommandService.cancelDelivery(deliveryId);
+        return ResponseEntity.ok(CommonResponse.success(null));
+    }
 }

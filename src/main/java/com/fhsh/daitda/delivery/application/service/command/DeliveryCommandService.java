@@ -55,6 +55,18 @@ public class DeliveryCommandService {
         return DeliveryStatusUpdateResult.from(delivery);
     }
 
+    @Transactional
+    public void cancelDelivery(UUID deliveryId) {
+        Delivery delivery = getDelivery(deliveryId);
+        delivery.cancel();
+    }
+
+    @Transactional
+    public void deleteDelivery(UUID deliveryId) {
+        Delivery delivery = getDelivery(deliveryId);
+        delivery.softDelete();
+    }
+
     // Helper Method
     private Delivery getDelivery(UUID deliveryId) {
         return deliveryRepository.findById(deliveryId)
