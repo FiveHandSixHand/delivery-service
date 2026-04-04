@@ -6,6 +6,7 @@ import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
 import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.repository.DeliveryOutboxRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class DeliveryCommandService {
     private final DeliveryManagerClient deliveryManagerClient;
     private final CompanyClient companyClient;
     private final DeliveryProcessor deliveryProcessor;
+    private final DeliveryOutboxRepository deliveryOutboxRepository;
 
     public DeliveryCreateResult registerDelivery(DeliveryCreateCommand command) {
 
@@ -30,8 +32,7 @@ public class DeliveryCommandService {
         Delivery delivery = deliveryProcessor.createAndSave(command, supplierHub, receiverHub);
 
         // 담당자 배정
-        // TODO 배정 실패 시 생성된 배송 롤백 보상 로직 필요
-        UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(receiverHub.getHubId(), delivery.getId());
+        UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHub.getHubId());
 
         // 담당자 업데이트
         return deliveryProcessor.assignManager(delivery, managerId);

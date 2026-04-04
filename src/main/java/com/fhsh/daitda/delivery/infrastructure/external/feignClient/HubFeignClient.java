@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface HubFeignClient {
 
     @GetMapping("/internal/v1/hubs/{userId}")
-    Map<UUID, String> getHubIdByManagerId(@PathVariable("userId") UUID userId);
+    UUID getHubIdByManagerId(@PathVariable("userId") UUID userId);
 
 
 }
