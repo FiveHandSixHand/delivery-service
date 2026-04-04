@@ -1,6 +1,6 @@
 package com.fhsh.daitda.delivery.presentation.controller;
 
-import com.fhsh.daitda.delivery.application.re.DeliveryStatusUpdateResult;
+import com.fhsh.daitda.delivery.application.result.DeliveryStatusUpdateResult;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.application.service.command.DeliveryCommandService;
 import com.fhsh.daitda.delivery.application.service.query.DeliveryQueryService;

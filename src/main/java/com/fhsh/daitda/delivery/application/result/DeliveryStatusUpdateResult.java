@@ -1,4 +1,4 @@
-package com.fhsh.daitda.delivery.application.re;
+package com.fhsh.daitda.delivery.application.result;
 
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryStatus;

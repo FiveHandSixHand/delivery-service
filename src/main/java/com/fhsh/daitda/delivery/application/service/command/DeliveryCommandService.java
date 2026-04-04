@@ -4,7 +4,7 @@ import com.fhsh.daitda.delivery.application.client.CompanyClient;
 import com.fhsh.daitda.delivery.application.client.DeliveryManagerClient;
 import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
 import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
-import com.fhsh.daitda.delivery.application.re.DeliveryStatusUpdateResult;
+import com.fhsh.daitda.delivery.application.result.DeliveryStatusUpdateResult;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryStatus;

@@ -1,6 +1,6 @@
 package com.fhsh.daitda.delivery.presentation.dto.response;
 
-import com.fhsh.daitda.delivery.application.re.DeliveryStatusUpdateResult;
+import com.fhsh.daitda.delivery.application.result.DeliveryStatusUpdateResult;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
