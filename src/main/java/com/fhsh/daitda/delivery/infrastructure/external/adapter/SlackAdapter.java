@@ -1,8 +1,6 @@
-package com.fhsh.daitda.delivery.infrastructure.external.adater;
+package com.fhsh.daitda.delivery.infrastructure.external.adapter;
 
-import com.fhsh.daitda.delivery.application.client.HubClient;
 import com.fhsh.daitda.delivery.application.client.SlackClient;
-import com.fhsh.daitda.delivery.infrastructure.external.feignClient.HubFeignClient;
 import com.fhsh.daitda.delivery.infrastructure.external.feignClient.SlackFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -1,11 +1,10 @@
-package com.fhsh.daitda.delivery.infrastructure.external.adater;
+package com.fhsh.daitda.delivery.infrastructure.external.adapter;
 
 import com.fhsh.daitda.delivery.application.client.HubClient;
 import com.fhsh.daitda.delivery.infrastructure.external.feignClient.HubFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Component

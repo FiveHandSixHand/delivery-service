@@ -1,11 +1,7 @@
-package com.fhsh.daitda.delivery.infrastructure.external.adater;
+package com.fhsh.daitda.delivery.infrastructure.external.adapter;
 
-import com.fhsh.daitda.delivery.application.client.CompanyClient;
 import com.fhsh.daitda.delivery.application.client.DeliveryManagerClient;
-import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
-import com.fhsh.daitda.delivery.application.client.response.DeliveryManagerInfo;
 import com.fhsh.daitda.delivery.infrastructure.external.dto.DeliveryManagerAssignRequest;
-import com.fhsh.daitda.delivery.infrastructure.external.feignClient.CompanyFeignClient;
 import com.fhsh.daitda.delivery.infrastructure.external.feignClient.DeliveryManagerFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
