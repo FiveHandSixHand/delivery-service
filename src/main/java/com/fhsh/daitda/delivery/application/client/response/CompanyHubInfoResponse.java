@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyHubInfo {
+public class CompanyHubInfoResponse {
     private UUID hubId;
     private String address;
     private LocalDateTime receivedAt;
