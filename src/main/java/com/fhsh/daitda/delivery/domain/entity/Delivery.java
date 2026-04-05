@@ -1,6 +1,6 @@
 package com.fhsh.daitda.delivery.domain.entity;
 
-import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
+import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfoResponse;
 import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
 import com.fhsh.daitda.domain.BaseUserEntity;
@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,8 +32,8 @@ public class Delivery extends BaseUserEntity {
     @Column(name = "status", nullable = false, length = 20)
     private DeliveryStatus status = DeliveryStatus.HUB_WAITING;
 
-    @OneToMany(mappedBy = "delivery", fetch = FetchType.LAZY)
-    private List<DeliveryRoute> deliveryRoutes;
+    @OneToMany(mappedBy = "delivery", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<DeliveryRoute> deliveryRoutes = new ArrayList<>();
 
     private UUID departureHubId;
 
@@ -52,7 +53,7 @@ public class Delivery extends BaseUserEntity {
 
     private UUID deliveryManagerId;
 
-    public static Delivery create(DeliveryCreateCommand command, CompanyHubInfo supplierHub, CompanyHubInfo receiverHub) {
+    public static Delivery create(DeliveryCreateCommand command, CompanyHubInfoResponse supplierHub, CompanyHubInfoResponse receiverHub) {
         Delivery delivery = new Delivery();
         delivery.orderId = command.getOrderId();
         delivery.status = DeliveryStatus.HUB_WAITING;
@@ -81,6 +82,10 @@ public class Delivery extends BaseUserEntity {
             throw new BusinessException(DeliveryErrorCode.CANNOT_CANCEL_DELIVERED);
         }
         this.status = DeliveryStatus.CANCELLED;
+    }
+
+    public void addRoutes(List<DeliveryRoute> routes) {
+        this.deliveryRoutes.addAll(routes);
     }
 
     public void softDelete(){
