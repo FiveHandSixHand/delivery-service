@@ -2,7 +2,9 @@ package com.fhsh.daitda.delivery.application.service.command;
 
 import com.fhsh.daitda.delivery.application.client.CompanyClient;
 import com.fhsh.daitda.delivery.application.client.DeliveryManagerClient;
-import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
+import com.fhsh.daitda.delivery.application.client.HubClient;
+import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfoResponse;
+import com.fhsh.daitda.delivery.application.client.response.HubRouteInfoResponse;
 import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryStatusUpdateResult;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
@@ -24,23 +26,26 @@ import java.util.UUID;
 public class DeliveryCommandService {
 
     private final DeliveryRepository deliveryRepository;
+    private final DeliveryProcessor deliveryProcessor;
     private final DeliveryStateFactory deliveryStateFactory;
     private final DeliveryManagerClient deliveryManagerClient;
     private final CompanyClient companyClient;
-    private final DeliveryProcessor deliveryProcessor;
+    private final HubClient hubClient;
 
     public DeliveryCreateResult registerDelivery(DeliveryCreateCommand command) {
 
         // 공급업체와 수령업체 허브 정보 조회
         // TODO 외부 서비스 호출 실패 시 보상 로직 필요
-        CompanyHubInfo supplierHub = companyClient.getHubIdByManagerId(command.getSupplierCompanyId());
-        CompanyHubInfo receiverHub = companyClient.getHubIdByManagerId(command.getReceiverCompanyId());
+        CompanyHubInfoResponse supplierHubResponse = companyClient.getHubIdByManagerId(command.getSupplierCompanyId());
+        CompanyHubInfoResponse receiverHubResponse = companyClient.getHubIdByManagerId(command.getReceiverCompanyId());
+        // TODO: 허브 서비스 전체 경로 조회 API 연동 필요 (현재 단일 구간만 제공)
+        HubRouteInfoResponse hubRouteInfoResponse = hubClient.getHubRouteInfo(command.getSupplierCompanyId(), command.getReceiverCompanyId()); // domainVO랑 이름 같아서 혼동
 
         // DB 작업
-        Delivery delivery = deliveryProcessor.createAndSave(command, supplierHub, receiverHub);
+        Delivery delivery = deliveryProcessor.createAndSave(command, supplierHubResponse, receiverHubResponse, hubRouteInfoResponse);
 
         // 담당자 배정
-        UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHub.getHubId());
+        UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHubResponse.getHubId());
 
         // 담당자 업데이트
         return deliveryProcessor.assignManager(delivery, managerId);
