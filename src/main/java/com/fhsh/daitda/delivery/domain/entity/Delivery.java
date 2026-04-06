@@ -92,7 +92,7 @@ public class Delivery extends BaseUserEntity {
         this.deliveryRoutes.addAll(routes);
     }
 
-    public void softDelete() {
+    public void softDelete(){
         if (this.deletedAt != null) {
             throw new BusinessException(DeliveryErrorCode.ALREADY_DELETED);
         }
