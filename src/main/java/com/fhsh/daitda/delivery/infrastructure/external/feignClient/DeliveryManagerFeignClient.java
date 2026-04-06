@@ -11,5 +11,5 @@ import java.util.UUID;
 public interface DeliveryManagerFeignClient {
 
     @PostMapping("/internal/v1/delivery-managers/assignments")
-    UUID assignCompanyDeliveryManager(@RequestBody DeliveryManagerAssignRequest request);
+    CommonResponse<UUID> assignCompanyDeliveryManager(@RequestBody DeliveryManagerAssignRequest request);
 }

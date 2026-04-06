@@ -15,6 +15,6 @@ public class CompanyAdapter implements CompanyClient {
 
     @Override
     public CompanyHubInfoResponse getHubIdByManagerId(UUID companyId) {
-        return companyFeignClient.getHubIdByManagerId(companyId);
+        return companyFeignClient.getHubIdByManagerId(companyId).getData();
     }
 }

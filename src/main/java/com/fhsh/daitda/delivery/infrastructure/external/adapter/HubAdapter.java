@@ -17,16 +17,16 @@ public class HubAdapter implements HubClient {
 
     @Override
     public UUID getHubIdByManagerId(UUID userId) {
-        return hubFeignClient.getHubIdByManagerId(userId);
+        return hubFeignClient.getHubIdByManagerId(userId).getData();
     }
 
     @Override
     public HubRouteInfoResponse getHubRouteInfo(UUID supplierCompanyId, UUID receiverCompanyId) {
-        return hubFeignClient.getHubRouteInfo(supplierCompanyId, receiverCompanyId);
+        return hubFeignClient.getHubRouteInfo(supplierCompanyId, receiverCompanyId).getData();
     }
 
     @Override
     public List<HubRouteInfoResponse> getHubRoutePath(UUID srcHubId, UUID destHubId) {
-        return hubFeignClient.getHubRoutePath(srcHubId, destHubId);
+        return hubFeignClient.getHubRoutePath(srcHubId, destHubId).getData();
     }
 }
