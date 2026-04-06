@@ -20,7 +20,7 @@ public class DeliveryCreateResponse {
     private String senderTenantAddress;
     private String receiverTenantAddress;
     private UUID receiverId;
-    private UUID deliveryManagersId;
+    private UUID deliveryManagerId;
     private LocalDateTime createdAt;
 
     public static DeliveryCreateResponse from(DeliveryCreateResult result) {
@@ -33,7 +33,7 @@ public class DeliveryCreateResponse {
                 result.getSenderTenantAddress(),
                 result.getReceiverTenantAddress(),
                 result.getReceiverId(),
-                result.getDeliveryManagersId(),
+                result.getDeliveryManagerId(),
                 result.getCreatedAt()
         );
     }

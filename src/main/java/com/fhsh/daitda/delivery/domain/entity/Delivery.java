@@ -61,8 +61,8 @@ public class Delivery extends BaseUserEntity {
         delivery.destinationHubId = receiverHub.getHubId();
         delivery.senderTenantId = command.getSupplierCompanyId();
         delivery.receiverTenantId = command.getReceiverCompanyId();
-        delivery.senderTenantAddress = supplierHub.getAddress();
-        delivery.receiverTenantAddress = receiverHub.getAddress();
+        delivery.senderTenantAddress = supplierHub.getFullAddress();
+        delivery.receiverTenantAddress = receiverHub.getFullAddress();
         delivery.receiverId = receiverHub.getHubId();
         delivery.senderId = supplierHub.getHubId();
         return delivery;
