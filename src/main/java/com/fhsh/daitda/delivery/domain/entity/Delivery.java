@@ -93,9 +93,6 @@ public class Delivery extends BaseUserEntity {
     }
 
     public void softDelete(){
-        if (this.deletedAt != null) {
-            throw new BusinessException(DeliveryErrorCode.ALREADY_DELETED);
-        }
-        this.deletedAt = LocalDateTime.now();
+        super.delete(deletedBy);
     }
 }
