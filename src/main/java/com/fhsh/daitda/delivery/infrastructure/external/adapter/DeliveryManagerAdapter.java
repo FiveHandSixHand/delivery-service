@@ -15,12 +15,14 @@ public class DeliveryManagerAdapter implements DeliveryManagerClient {
     private final DeliveryManagerFeignClient deliveryManagerFeignClient;
 
     @Override
-    public UUID assignHubDeliveryManager(UUID companyId) {
-        return null;
+    public UUID assignHubDeliveryManager(UUID deliveryId) {
+        return deliveryManagerFeignClient.assignDeliveryManager(
+                new DeliveryManagerAssignRequest(deliveryId, null)).getData();
     }
 
     @Override
     public UUID assignCompanyDeliveryManager(UUID deliveryId, UUID hubId) {
-        return deliveryManagerFeignClient.assignCompanyDeliveryManager(new DeliveryManagerAssignRequest(deliveryId, hubId)).getData();
+        return deliveryManagerFeignClient.assignDeliveryManager(
+                new DeliveryManagerAssignRequest(deliveryId, hubId)).getData();
     }
 }

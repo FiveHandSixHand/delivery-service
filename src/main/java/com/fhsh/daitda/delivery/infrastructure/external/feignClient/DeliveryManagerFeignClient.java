@@ -5,11 +5,13 @@ import com.fhsh.daitda.response.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.datatransfer.Clipboard;
 import java.util.UUID;
 
 @FeignClient(name = "delivery-service")
 public interface DeliveryManagerFeignClient {
 
     @PostMapping("/internal/v1/delivery-managers/assignments")
-    CommonResponse<UUID> assignCompanyDeliveryManager(@RequestBody DeliveryManagerAssignRequest request);
+    CommonResponse<UUID> assignDeliveryManager(@RequestBody DeliveryManagerAssignRequest request);
+
 }

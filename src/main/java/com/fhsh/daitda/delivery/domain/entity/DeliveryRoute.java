@@ -74,6 +74,10 @@ public class DeliveryRoute extends BaseUserEntity {
         return deliveryRoute;
     }
 
+    public void assignManager(UUID deliveryManagerId) {
+        this.deliveryManagerId = deliveryManagerId;
+    }
+
     public void softDelete(){
         super.delete(deletedBy);
     }

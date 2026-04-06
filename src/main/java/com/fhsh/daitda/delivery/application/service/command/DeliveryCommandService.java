@@ -9,6 +9,7 @@ import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryStatusUpdateResult;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.entity.DeliveryRoute;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryStatus;
 import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
 import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,6 +47,11 @@ public class DeliveryCommandService {
         Delivery delivery = deliveryProcessor.createAndSave(command, supplierHubResponse, receiverHubResponse, hubRouteInfoResponseList);
 
         // 담당자 배정
+        List<UUID> hubManagerIds = new ArrayList<>();
+        for (DeliveryRoute route : delivery.getDeliveryRoutes()) {
+            hubManagerIds.add(deliveryManagerClient.assignHubDeliveryManager(delivery.getId()));
+        }
+        deliveryProcessor.assignHubManagers(delivery, hubManagerIds);
         UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHubResponse.getHubId());
 
         // 담당자 업데이트

@@ -59,4 +59,13 @@ public class DeliveryProcessor {
         deliveryRepository.save(delivery);
         return DeliveryCreateResult.from(delivery);
     }
+
+    @Transactional
+    public void assignHubManagers(Delivery delivery, List<UUID> hubManagerIds) {
+        List<DeliveryRoute> routes = delivery.getDeliveryRoutes();
+        for (int i = 0; i < routes.size(); i++) {
+            routes.get(i).assignManager(hubManagerIds.get(i));
+        }
+        deliveryRepository.save(delivery); // cascade MERGE로 routes도 같이 저장
+    }
 }
