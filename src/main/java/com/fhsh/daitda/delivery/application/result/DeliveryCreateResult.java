@@ -20,7 +20,7 @@ public class DeliveryCreateResult {
     private String senderTenantAddress;
     private String receiverTenantAddress;
     private UUID receiverId;
-    private UUID deliveryManagersId;
+    private UUID deliveryManagerId;
     private LocalDateTime createdAt;
 
     public static DeliveryCreateResult from(Delivery delivery) {

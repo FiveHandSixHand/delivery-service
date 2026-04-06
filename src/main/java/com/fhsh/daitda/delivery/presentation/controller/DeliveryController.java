@@ -50,7 +50,7 @@ public class DeliveryController {
         return ResponseEntity.ok(CommonResponse.success(responses));
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<CommonResponse<DeliveryCreateResponse>> createDelivery(
             @RequestBody DeliveryCreateRequest request
     ) {
