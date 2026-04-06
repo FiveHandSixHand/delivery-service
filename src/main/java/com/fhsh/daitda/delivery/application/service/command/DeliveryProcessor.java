@@ -38,15 +38,15 @@ public class DeliveryProcessor {
     public Delivery createAndSave(DeliveryCreateCommand command,
                                   CompanyHubInfoResponse supplierHubResponse,
                                   CompanyHubInfoResponse receiverHubResponse,
-                                  HubRouteInfoResponse hubRouteInfoResponse) {
+                                  List<HubRouteInfoResponse> hubRouteInfoResponseList) {
 
         Delivery delivery = Delivery.create(command, supplierHubResponse, receiverHubResponse);
 
         List<DeliveryRoute> routes = new ArrayList<>();
 
-        DeliveryRoute deliveryRoute = DeliveryRoute.create(delivery, hubRouteInfoResponse.toHubRouteInfo(), 1);
-
-        routes.add(deliveryRoute);
+        for (int i = 0; i < hubRouteInfoResponseList.size(); i++) {
+            routes.add(DeliveryRoute.create(delivery, hubRouteInfoResponseList.get(i).toHubRouteInfo(), i + 1));
+        }
 
         delivery.addRoutes(routes);
 

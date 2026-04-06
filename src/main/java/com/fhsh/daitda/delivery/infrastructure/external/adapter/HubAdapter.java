@@ -7,6 +7,7 @@ import com.fhsh.daitda.delivery.infrastructure.external.feignClient.HubFeignClie
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -22,5 +23,10 @@ public class HubAdapter implements HubClient {
     @Override
     public HubRouteInfoResponse getHubRouteInfo(UUID supplierCompanyId, UUID receiverCompanyId) {
         return hubFeignClient.getHubRouteInfo(supplierCompanyId, receiverCompanyId);
+    }
+
+    @Override
+    public List<HubRouteInfoResponse> getHubRoutePath(UUID srcHubId, UUID destHubId) {
+        return hubFeignClient.getHubRoutePath(srcHubId, destHubId);
     }
 }

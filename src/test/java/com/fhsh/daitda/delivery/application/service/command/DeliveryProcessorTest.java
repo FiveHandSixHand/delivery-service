@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,7 +67,7 @@ class DeliveryProcessorTest {
                 .willAnswer(invocation -> invocation.getArgument(0));
 
         // when
-        Delivery result = deliveryProcessor.createAndSave(command, supplierHub, receiverHub, hubRouteInfo);
+        Delivery result = deliveryProcessor.createAndSave(command, supplierHub, receiverHub, List.of(hubRouteInfo));
 
         // then
         assertThat(result.getDeliveryRoutes()).hasSize(1);
