@@ -38,15 +38,15 @@ public class DeliveryProcessor {
     public Delivery createAndSave(DeliveryCreateCommand command,
                                   CompanyHubInfoResponse supplierHubResponse,
                                   CompanyHubInfoResponse receiverHubResponse,
-                                  HubRouteInfoResponse hubRouteInfoResponse) {
+                                  List<HubRouteInfoResponse> hubRouteInfoResponseList) {
 
         Delivery delivery = Delivery.create(command, supplierHubResponse, receiverHubResponse);
 
         List<DeliveryRoute> routes = new ArrayList<>();
 
-        DeliveryRoute deliveryRoute = DeliveryRoute.create(delivery, hubRouteInfoResponse.toHubRouteInfo(), 1);
-
-        routes.add(deliveryRoute);
+        for (int i = 0; i < hubRouteInfoResponseList.size(); i++) {
+            routes.add(DeliveryRoute.create(delivery, hubRouteInfoResponseList.get(i).toHubRouteInfo(), i + 1));
+        }
 
         delivery.addRoutes(routes);
 
@@ -58,5 +58,14 @@ public class DeliveryProcessor {
         delivery.assignManagers(managerId);
         deliveryRepository.save(delivery);
         return DeliveryCreateResult.from(delivery);
+    }
+
+    @Transactional
+    public void assignHubManagers(Delivery delivery, List<UUID> hubManagerIds) {
+        List<DeliveryRoute> routes = delivery.getDeliveryRoutes();
+        for (int i = 0; i < routes.size(); i++) {
+            routes.get(i).assignManager(hubManagerIds.get(i));
+        }
+        deliveryRepository.save(delivery); // cascade MERGE로 routes도 같이 저장
     }
 }

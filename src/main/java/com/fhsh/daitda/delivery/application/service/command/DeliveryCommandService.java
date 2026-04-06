@@ -9,6 +9,7 @@ import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryStatusUpdateResult;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.entity.DeliveryRoute;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryStatus;
 import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
 import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
@@ -19,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -38,13 +41,17 @@ public class DeliveryCommandService {
         // TODO 외부 서비스 호출 실패 시 보상 로직 필요
         CompanyHubInfoResponse supplierHubResponse = companyClient.getHubIdByManagerId(command.getSupplierCompanyId());
         CompanyHubInfoResponse receiverHubResponse = companyClient.getHubIdByManagerId(command.getReceiverCompanyId());
-        // TODO: 허브 서비스 전체 경로 조회 API 연동 필요 (현재 단일 구간만 제공)
-        HubRouteInfoResponse hubRouteInfoResponse = hubClient.getHubRouteInfo(command.getSupplierCompanyId(), command.getReceiverCompanyId()); // domainVO랑 이름 같아서 혼동
+        List<HubRouteInfoResponse> hubRouteInfoResponseList = hubClient.getHubRoutePath(supplierHubResponse.getHubId(), receiverHubResponse.getHubId());
 
         // DB 작업
-        Delivery delivery = deliveryProcessor.createAndSave(command, supplierHubResponse, receiverHubResponse, hubRouteInfoResponse);
+        Delivery delivery = deliveryProcessor.createAndSave(command, supplierHubResponse, receiverHubResponse, hubRouteInfoResponseList);
 
         // 담당자 배정
+        List<UUID> hubManagerIds = new ArrayList<>();
+        for (DeliveryRoute route : delivery.getDeliveryRoutes()) {
+            hubManagerIds.add(deliveryManagerClient.assignHubDeliveryManager(delivery.getId()));
+        }
+        deliveryProcessor.assignHubManagers(delivery, hubManagerIds);
         UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHubResponse.getHubId());
 
         // 담당자 업데이트

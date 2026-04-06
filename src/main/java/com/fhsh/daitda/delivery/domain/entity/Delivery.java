@@ -32,7 +32,7 @@ public class Delivery extends BaseUserEntity {
     @Column(name = "status", nullable = false, length = 20)
     private DeliveryStatus status = DeliveryStatus.HUB_WAITING;
 
-    @OneToMany(mappedBy = "delivery", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "delivery", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<DeliveryRoute> deliveryRoutes = new ArrayList<>();
 
     private UUID departureHubId;
@@ -93,9 +93,6 @@ public class Delivery extends BaseUserEntity {
     }
 
     public void softDelete(){
-        if (this.deletedAt != null) {
-            throw new BusinessException(DeliveryErrorCode.ALREADY_DELETED);
-        }
-        this.deletedAt = LocalDateTime.now();
+        super.delete(deletedBy);
     }
 }

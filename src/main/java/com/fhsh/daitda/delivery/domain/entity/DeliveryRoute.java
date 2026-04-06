@@ -74,10 +74,12 @@ public class DeliveryRoute extends BaseUserEntity {
         return deliveryRoute;
     }
 
-    public void softDelete(){
-        if (this.deletedAt != null) {
-            throw new BusinessException(DeliveryErrorCode.ALREADY_DELETED);
-        }
-        this.deletedAt = LocalDateTime.now();
+    public void assignManager(UUID deliveryManagerId) {
+        this.deliveryManagerId = deliveryManagerId;
     }
+
+    public void softDelete(){
+        super.delete(deletedBy);
+    }
+
 }
