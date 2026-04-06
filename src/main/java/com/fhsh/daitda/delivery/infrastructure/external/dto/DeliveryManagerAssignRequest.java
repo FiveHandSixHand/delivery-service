@@ -11,4 +11,5 @@ import java.util.UUID;
 @AllArgsConstructor
 public class DeliveryManagerAssignRequest {
     UUID deliveryId;
+    UUID hubId;
 }
