@@ -2,7 +2,7 @@ package com.fhsh.daitda.delivery.application.service.command;
 
 import com.fhsh.daitda.delivery.application.client.CompanyClient;
 import com.fhsh.daitda.delivery.application.client.DeliveryManagerClient;
-import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
+import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfoResponse;
 import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
@@ -43,14 +43,14 @@ class DeliveryCommandServiceTest {
                 UUID.randomUUID()
         );
 
-        CompanyHubInfo supplierHub = new CompanyHubInfo(UUID.randomUUID(), "서울시", LocalDateTime.now(), "홍길동");
-        CompanyHubInfo receiverHub = new CompanyHubInfo(UUID.randomUUID(), "부산시", LocalDateTime.now(), "김철수");
+        CompanyHubInfoResponse supplierHub = new CompanyHubInfoResponse(UUID.randomUUID(), "서울시", LocalDateTime.now(), "홍길동");
+        CompanyHubInfoResponse receiverHub = new CompanyHubInfoResponse(UUID.randomUUID(), "부산시", LocalDateTime.now(), "김철수");
         Delivery delivery = Delivery.create(command, supplierHub, receiverHub);
         UUID managerId = UUID.randomUUID();
 
         given(companyClient.getHubIdByManagerId(command.getSupplierCompanyId())).willReturn(supplierHub);
         given(companyClient.getHubIdByManagerId(command.getReceiverCompanyId())).willReturn(receiverHub);
-        given(deliveryProcessor.createAndSave(command, supplierHub, receiverHub)).willReturn(delivery);
+//        given(deliveryProcessor.createAndSave(command, supplierHub, receiverHub, hubRouteInfo)).willReturn(delivery);
         given(deliveryManagerClient.assignCompanyDeliveryManager(any(), any())).willReturn(managerId);
         given(deliveryProcessor.assignManager(delivery, managerId)).willReturn(DeliveryCreateResult.from(delivery));
 

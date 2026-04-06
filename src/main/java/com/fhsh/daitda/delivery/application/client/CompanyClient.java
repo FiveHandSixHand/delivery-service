@@ -1,9 +1,9 @@
 package com.fhsh.daitda.delivery.application.client;
 
-import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
+import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfoResponse;
 
 import java.util.UUID;
 
 public interface CompanyClient {
-    CompanyHubInfo getHubIdByManagerId(UUID companyId);
+    CompanyHubInfoResponse getHubIdByManagerId(UUID companyId);
 }

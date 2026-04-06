@@ -1,7 +1,7 @@
 package com.fhsh.daitda.delivery.infrastructure.external.adapter;
 
 import com.fhsh.daitda.delivery.application.client.CompanyClient;
-import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
+import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfoResponse;
 import com.fhsh.daitda.delivery.infrastructure.external.feignClient.CompanyFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ public class CompanyAdapter implements CompanyClient {
     private final CompanyFeignClient companyFeignClient;
 
     @Override
-    public CompanyHubInfo getHubIdByManagerId(UUID companyId) {
+    public CompanyHubInfoResponse getHubIdByManagerId(UUID companyId) {
         return companyFeignClient.getHubIdByManagerId(companyId);
     }
 }

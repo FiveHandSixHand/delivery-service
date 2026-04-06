@@ -1,14 +1,18 @@
 package com.fhsh.daitda.delivery.application.service.command;
 
-import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
+import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfoResponse;
+import com.fhsh.daitda.delivery.application.client.response.HubRouteInfoResponse;
 import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.entity.DeliveryRoute;
 import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -31,8 +35,21 @@ public class DeliveryProcessor {
     private final DeliveryRepository deliveryRepository;
 
     @Transactional
-    public Delivery createAndSave(DeliveryCreateCommand command, CompanyHubInfo supplierHub, CompanyHubInfo receiverHub) {
-        Delivery delivery = Delivery.create(command, supplierHub, receiverHub);
+    public Delivery createAndSave(DeliveryCreateCommand command,
+                                  CompanyHubInfoResponse supplierHubResponse,
+                                  CompanyHubInfoResponse receiverHubResponse,
+                                  HubRouteInfoResponse hubRouteInfoResponse) {
+
+        Delivery delivery = Delivery.create(command, supplierHubResponse, receiverHubResponse);
+
+        List<DeliveryRoute> routes = new ArrayList<>();
+
+        DeliveryRoute deliveryRoute = DeliveryRoute.create(delivery, hubRouteInfoResponse.toHubRouteInfo(), 1);
+
+        routes.add(deliveryRoute);
+
+        delivery.addRoutes(routes);
+
         return deliveryRepository.save(delivery);
     }
 
