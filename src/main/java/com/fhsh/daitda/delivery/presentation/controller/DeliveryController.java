@@ -1,11 +1,14 @@
 package com.fhsh.daitda.delivery.presentation.controller;
 
+import com.fhsh.daitda.delivery.application.result.DeliveryStatusUpdateResult;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.application.service.command.DeliveryCommandService;
 import com.fhsh.daitda.delivery.application.service.query.DeliveryQueryService;
+import com.fhsh.daitda.delivery.presentation.dto.request.DeliveryStatusUpdateRequest;
 import com.fhsh.daitda.delivery.presentation.dto.response.DeliveryCreateResponse;
 import com.fhsh.daitda.delivery.presentation.dto.request.DeliveryCreateRequest;
 import com.fhsh.daitda.delivery.presentation.dto.response.DeliveryInfoResponse;
+import com.fhsh.daitda.delivery.presentation.dto.response.DeliveryStatusUpdateResponse;
 import com.fhsh.daitda.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -53,5 +56,23 @@ public class DeliveryController {
     ) {
         DeliveryCreateResult result = deliveryCommandService.registerDelivery(request.toCommand());
         return ResponseEntity.ok(CommonResponse.success(DeliveryCreateResponse.from(result)));
+    }
+
+    @PatchMapping("/{deliveryId}/status")
+    public ResponseEntity<CommonResponse<DeliveryStatusUpdateResponse>> updateStatus(
+            @PathVariable UUID deliveryId,
+            @RequestBody DeliveryStatusUpdateRequest request,
+            @RequestHeader(value = "X-User-Email") String email) {
+
+        DeliveryStatusUpdateResult result = deliveryCommandService.updateStatus(deliveryId, request.getStatus(), email);
+        return ResponseEntity.ok(CommonResponse.success(DeliveryStatusUpdateResponse.from(result)));
+    }
+
+    @DeleteMapping("/{deliveryId}/cancel")
+    public ResponseEntity<CommonResponse<Void>> cancelDelivery(
+            @PathVariable UUID deliveryId) {
+
+        deliveryCommandService.cancelDelivery(deliveryId);
+        return ResponseEntity.ok(CommonResponse.success(null));
     }
 }

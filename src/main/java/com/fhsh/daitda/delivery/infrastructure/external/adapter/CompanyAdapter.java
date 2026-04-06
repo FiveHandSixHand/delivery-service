@@ -1,4 +1,4 @@
-package com.fhsh.daitda.delivery.infrastructure.external.adater;
+package com.fhsh.daitda.delivery.infrastructure.external.adapter;
 
 import com.fhsh.daitda.delivery.application.client.CompanyClient;
 import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;

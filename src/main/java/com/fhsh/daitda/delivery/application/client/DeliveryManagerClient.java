@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface DeliveryManagerClient {
     UUID assignHubDeliveryManager(UUID companyId);
-    UUID assignCompanyDeliveryManager(UUID companyId, UUID hubId);
+    UUID assignCompanyDeliveryManager(UUID deliveryId, UUID hubId);
 }

@@ -46,6 +46,11 @@ public class DeliveryQueryService {
     // Helper Method
     private Slice<Delivery> getDeliveriesForHubManager(UUID userId, Pageable pageable) {
         UUID hubId = hubClient.getHubIdByManagerId(userId);
+
+        if (hubId == null) {
+            throw new BusinessException(CommonErrorCode.FORBIDDEN);
+        }
+
         return deliveryRepository.findByHubId(hubId, pageable);
     }
 }

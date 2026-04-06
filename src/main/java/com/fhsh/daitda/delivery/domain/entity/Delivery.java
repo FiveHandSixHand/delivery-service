@@ -2,13 +2,16 @@ package com.fhsh.daitda.delivery.domain.entity;
 
 import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfo;
 import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
+import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
 import com.fhsh.daitda.domain.BaseUserEntity;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryStatus;
+import com.fhsh.daitda.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,5 +70,23 @@ public class Delivery extends BaseUserEntity {
     // 최종 허브 -> 업체
     public void assignManagers(UUID companyDeliveryManagerId) {
         this.deliveryManagerId = companyDeliveryManagerId;
+    }
+
+    public void changeStatus(DeliveryStatus newStatus) {
+        this.status = newStatus;
+    }
+
+    public void cancel() {
+        if (this.status == DeliveryStatus.COMPLETE) {
+            throw new BusinessException(DeliveryErrorCode.CANNOT_CANCEL_DELIVERED);
+        }
+        this.status = DeliveryStatus.CANCELLED;
+    }
+
+    public void softDelete(){
+        if (this.deletedAt != null) {
+            throw new BusinessException(DeliveryErrorCode.ALREADY_DELETED);
+        }
+        this.deletedAt = LocalDateTime.now();
     }
 }
