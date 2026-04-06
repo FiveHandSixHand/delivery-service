@@ -82,13 +82,20 @@ public class Delivery extends BaseUserEntity {
             throw new BusinessException(DeliveryErrorCode.CANNOT_CANCEL_DELIVERED);
         }
         this.status = DeliveryStatus.CANCELLED;
+
+        this.deliveryRoutes.stream()
+                .filter(deliveryRoute -> deliveryRoute.getDeletedAt() == null)
+                .forEach(DeliveryRoute::softDelete);
     }
 
     public void addRoutes(List<DeliveryRoute> routes) {
         this.deliveryRoutes.addAll(routes);
     }
 
-    public void softDelete(){
-        super.delete(deletedBy);
+    public void softDelete() {
+        if (this.deletedAt != null) {
+            throw new BusinessException(DeliveryErrorCode.ALREADY_DELETED);
+        }
+        this.deletedAt = LocalDateTime.now();
     }
 }
