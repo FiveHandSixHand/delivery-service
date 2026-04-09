@@ -40,7 +40,18 @@ public class DeliveryProcessor {
                                   CompanyHubInfoResponse receiverHubResponse,
                                   List<HubRouteInfoResponse> hubRouteInfoResponseList) {
 
-        Delivery delivery = Delivery.create(command, supplierHubResponse, receiverHubResponse);
+
+        //TO-BE 외부서비스에서 API스팩이 바뀌면 delivery domain까지 문제가 생김 -> application layer dto를 넘겨서는 안되는 이유
+        //Delivery delivery = Delivery.create(command, supplierHubResponse, receiverHubResponse);
+        Delivery delivery = Delivery.create(command.getOrderId(),
+                                            supplierHubResponse.getHubId(),
+                                            receiverHubResponse.getHubId(),
+                                            command.getSupplierCompanyId(),
+                                            command.getReceiverCompanyId(),
+                                            supplierHubResponse.getFullAddress(),
+                                            receiverHubResponse.getFullAddress(),
+                                            receiverHubResponse.getHubId(),
+                                            supplierHubResponse.getHubId());
 
         List<DeliveryRoute> routes = new ArrayList<>();
 

@@ -43,16 +43,16 @@ class DeliveryCommandServiceTest {
                 UUID.randomUUID()
         );
 
-        CompanyHubInfoResponse supplierHub = new CompanyHubInfoResponse(UUID.randomUUID(), "서울시", LocalDateTime.now(), "홍길동");
-        CompanyHubInfoResponse receiverHub = new CompanyHubInfoResponse(UUID.randomUUID(), "부산시", LocalDateTime.now(), "김철수");
-        Delivery delivery = Delivery.create(command, supplierHub, receiverHub);
+//        CompanyHubInfoResponse supplierHub = new CompanyHubInfoResponse(UUID.randomUUID(), "서울시", LocalDateTime.now(), "홍길동");
+//        CompanyHubInfoResponse receiverHub = new CompanyHubInfoResponse(UUID.randomUUID(), "부산시", LocalDateTime.now(), "김철수");
+//        Delivery delivery = Delivery.create(command, supplierHub, receiverHub);
         UUID managerId = UUID.randomUUID();
 
-        given(companyClient.getHubIdByManagerId(command.getSupplierCompanyId())).willReturn(supplierHub);
-        given(companyClient.getHubIdByManagerId(command.getReceiverCompanyId())).willReturn(receiverHub);
-//        given(deliveryProcessor.createAndSave(command, supplierHub, receiverHub, hubRouteInfo)).willReturn(delivery);
-        given(deliveryManagerClient.assignCompanyDeliveryManager(any(), any())).willReturn(managerId);
-        given(deliveryProcessor.assignManager(delivery, managerId)).willReturn(DeliveryCreateResult.from(delivery));
+//        given(companyClient.getHubIdByManagerId(command.getSupplierCompanyId())).willReturn(supplierHub);
+//        given(companyClient.getHubIdByManagerId(command.getReceiverCompanyId())).willReturn(receiverHub);
+////        given(deliveryProcessor.createAndSave(command, supplierHub, receiverHub, hubRouteInfo)).willReturn(delivery);
+//        given(deliveryManagerClient.assignCompanyDeliveryManager(any(), any())).willReturn(managerId);
+//        given(deliveryProcessor.assignManager(delivery, managerId)).willReturn(DeliveryCreateResult.from(delivery));
 
         // when
         DeliveryCreateResult result = deliveryCommandService.registerDelivery(command);

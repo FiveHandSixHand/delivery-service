@@ -1,17 +1,15 @@
 package com.fhsh.daitda.delivery.domain.entity;
 
-import com.fhsh.daitda.delivery.application.client.response.CompanyHubInfoResponse;
-import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
 import com.fhsh.daitda.domain.BaseUserEntity;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryStatus;
 import com.fhsh.daitda.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,19 +51,31 @@ public class Delivery extends BaseUserEntity {
 
     private UUID deliveryManagerId;
 
-    public static Delivery create(DeliveryCreateCommand command, CompanyHubInfoResponse supplierHub, CompanyHubInfoResponse receiverHub) {
-        Delivery delivery = new Delivery();
-        delivery.orderId = command.getOrderId();
-        delivery.status = DeliveryStatus.HUB_WAITING;
-        delivery.departureHubId = supplierHub.getHubId();
-        delivery.destinationHubId = receiverHub.getHubId();
-        delivery.senderTenantId = command.getSupplierCompanyId();
-        delivery.receiverTenantId = command.getReceiverCompanyId();
-        delivery.senderTenantAddress = supplierHub.getFullAddress();
-        delivery.receiverTenantAddress = receiverHub.getFullAddress();
-        delivery.receiverId = receiverHub.getHubId();
-        delivery.senderId = supplierHub.getHubId();
-        return delivery;
+    @Builder(access = AccessLevel.PRIVATE)
+    private Delivery(UUID orderId, UUID departureHubId, UUID destinationHubId, UUID senderTenantId, UUID receiverTenantId, String senderTenantAddress, String receiverTenantAddress, UUID receiverId, UUID senderId) {
+        this.orderId = orderId;
+        this.departureHubId = departureHubId;
+        this.destinationHubId = destinationHubId;
+        this.senderTenantId = senderTenantId;
+        this.receiverTenantId = receiverTenantId;
+        this.senderTenantAddress = senderTenantAddress;
+        this.receiverTenantAddress = receiverTenantAddress;
+        this.receiverId = receiverId;
+        this.senderId = senderId;
+    }
+
+    public static Delivery create(UUID orderId, UUID departureHubId, UUID destinationHubId, UUID senderTenantId, UUID receiverTenantId, String senderTenantFullAddress, String receiverTenantFullAddress, UUID receiverId, UUID senderId) {
+        return Delivery.builder()
+                .orderId(orderId)
+                .departureHubId(departureHubId)
+                .destinationHubId(destinationHubId)
+                .senderTenantId(senderTenantId)
+                .receiverTenantId(receiverTenantId)
+                .senderTenantAddress(senderTenantFullAddress)
+                .receiverTenantAddress(receiverTenantFullAddress)
+                .receiverId(receiverId)
+                .senderId(senderId)
+                .build();
     }
 
     // 최종 허브 -> 업체
