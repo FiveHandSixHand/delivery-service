@@ -43,16 +43,30 @@ public class DeliveryCommandService {
         CompanyHubInfoResponse receiverHubResponse = companyClient.getHubIdByManagerId(command.getReceiverCompanyId());
         List<HubRouteInfoResponse> hubRouteInfoResponseList = hubClient.getHubRoutePath(supplierHubResponse.getHubId(), receiverHubResponse.getHubId());
 
-        // DB 작업
-        Delivery delivery = deliveryProcessor.createAndSave(command, supplierHubResponse, receiverHubResponse, hubRouteInfoResponseList);
+        Delivery delivery = null;
+        UUID managerId = null;
+        List<UUID> hubManagerIds = new ArrayList<>();
 
         // 담당자 배정
-        List<UUID> hubManagerIds = new ArrayList<>();
-        for (DeliveryRoute route : delivery.getDeliveryRoutes()) {
-            hubManagerIds.add(deliveryManagerClient.assignHubDeliveryManager(delivery.getId()));
+        try {
+            // DB 작업
+            delivery = deliveryProcessor.createAndSave(command, supplierHubResponse, receiverHubResponse, hubRouteInfoResponseList);
+
+            for (DeliveryRoute route : delivery.getDeliveryRoutes()) {
+                hubManagerIds.add(deliveryManagerClient.assignHubDeliveryManager(delivery.getId()));
+            }
+            deliveryProcessor.assignHubManagers(delivery, hubManagerIds);
+            managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHubResponse.getHubId());
+
+        } catch(Exception e){
+
+            // 매니저 배정 실패시 처리 될 로직(보상 트랜잭션)
+            if (delivery != null) {
+                deliveryManagerClient.cancelHubManagers(hubManagerIds); // 보상트랜잭션이 또 실패하면? 또 보상해야하나? try-catch문 지옥?
+                delivery.softDelete();
+            }
+            throw new BusinessException(DeliveryErrorCode.DELIVERY_CREATION_FAILED);
         }
-        deliveryProcessor.assignHubManagers(delivery, hubManagerIds);
-        UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHubResponse.getHubId());
 
         // 담당자 업데이트
         return deliveryProcessor.assignManager(delivery, managerId);
