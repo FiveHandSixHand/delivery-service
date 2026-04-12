@@ -17,6 +17,7 @@ import com.fhsh.daitda.delivery.domain.state.DeliveryState;
 import com.fhsh.daitda.delivery.application.state.DeliveryStateFactory;
 import com.fhsh.daitda.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DeliveryCommandService {
 
     private final DeliveryRepository deliveryRepository;
@@ -59,15 +61,18 @@ public class DeliveryCommandService {
             managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHubResponse.getHubId());
 
         } catch(Exception e){
-
             // 매니저 배정 실패시 처리 될 로직(보상 트랜잭션)
             if (delivery != null) {
-                deliveryManagerClient.cancelHubManagers(hubManagerIds); // 보상트랜잭션이 또 실패하면? 또 보상해야하나? try-catch문 지옥?
-                delivery.softDelete();
+                try {
+                    deliveryManagerClient.cancelHubManagers(hubManagerIds);
+                } catch (Exception compensationEx) {
+                    log.error("[보상 트랜잭션 실패] 수동 처리 필요 - deliveryId: {}, 취소 필요한 hubManagerIds: {}",
+                            delivery.getId(), hubManagerIds, compensationEx);
+                }
+                deleteDelivery(delivery.getId());
             }
             throw new BusinessException(DeliveryErrorCode.DELIVERY_CREATION_FAILED);
         }
-
         // 담당자 업데이트
         return deliveryProcessor.assignManager(delivery, managerId);
     }
@@ -87,10 +92,8 @@ public class DeliveryCommandService {
         delivery.cancel();
     }
 
-    @Transactional
     public void deleteDelivery(UUID deliveryId) {
-        Delivery delivery = getDelivery(deliveryId);
-        delivery.softDelete();
+        deliveryProcessor.deleteDelivery(deliveryId);
     }
 
     // Helper Method

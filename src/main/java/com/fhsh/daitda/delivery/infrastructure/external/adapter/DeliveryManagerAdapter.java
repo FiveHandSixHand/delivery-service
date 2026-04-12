@@ -6,6 +6,7 @@ import com.fhsh.daitda.delivery.infrastructure.external.feignClient.DeliveryMana
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -24,5 +25,10 @@ public class DeliveryManagerAdapter implements DeliveryManagerClient {
     public UUID assignCompanyDeliveryManager(UUID deliveryId, UUID hubId) {
         return deliveryManagerFeignClient.assignDeliveryManager(
                 new DeliveryManagerAssignRequest(deliveryId, hubId)).getData().getDeliveryManagerId();
+    }
+
+    @Override
+    public void cancelHubManagers(List<UUID> hubManagerIds) {
+        deliveryManagerFeignClient.cancelHubManagers(hubManagerIds);
     }
 }
