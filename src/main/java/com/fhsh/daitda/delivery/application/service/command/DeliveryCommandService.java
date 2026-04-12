@@ -63,12 +63,7 @@ public class DeliveryCommandService {
         } catch(Exception e){
             // 매니저 배정 실패시 처리 될 로직(보상 트랜잭션)
             if (delivery != null) {
-                try {
-                    deliveryManagerClient.cancelHubManagers(hubManagerIds);
-                } catch (Exception compensationEx) {
-                    log.error("[보상 트랜잭션 실패] 수동 처리 필요 - deliveryId: {}, 취소 필요한 hubManagerIds: {}",
-                            delivery.getId(), hubManagerIds, compensationEx);
-                }
+                deliveryManagerClient.cancelHubManagers(hubManagerIds);
                 deleteDelivery(delivery.getId());
             }
             throw new BusinessException(DeliveryErrorCode.DELIVERY_CREATION_FAILED);
