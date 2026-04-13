@@ -53,5 +53,6 @@ public class DeliveryManagerAdapter implements DeliveryManagerClient {
     @Recover
     public void recoverCancelHubManagers(FeignException e, List<UUID> hubManagerIds) {
         log.error("[재시도 횟수 소진] 수동 처리 필요 - 취소 필요한 hubManagerIds: {}", hubManagerIds);
+        throw new RuntimeException("보상 트랜잭션 최종 실패", e);
     }
 }

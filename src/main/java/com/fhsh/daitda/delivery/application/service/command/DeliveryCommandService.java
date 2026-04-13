@@ -9,6 +9,7 @@ import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryStatusUpdateResult;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.entity.DeliveryOutbox;
 import com.fhsh.daitda.delivery.domain.entity.DeliveryRoute;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryStatus;
 import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
@@ -16,6 +17,7 @@ import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
 import com.fhsh.daitda.delivery.domain.state.DeliveryState;
 import com.fhsh.daitda.delivery.application.state.DeliveryStateFactory;
 import com.fhsh.daitda.exception.BusinessException;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class DeliveryCommandService {
 
     private final DeliveryRepository deliveryRepository;
     private final DeliveryProcessor deliveryProcessor;
+    private final DeliveryOutboxProcessor deliveryOutboxProcessor;
     private final DeliveryStateFactory deliveryStateFactory;
     private final DeliveryManagerClient deliveryManagerClient;
     private final CompanyClient companyClient;
@@ -63,7 +66,14 @@ public class DeliveryCommandService {
         } catch(Exception e){
             // 매니저 배정 실패시 처리 될 로직(보상 트랜잭션)
             if (delivery != null) {
-                deliveryManagerClient.cancelHubManagers(hubManagerIds);
+                DeliveryOutbox outbox = deliveryOutboxProcessor.save(hubManagerIds);
+                try {
+                    deliveryManagerClient.cancelHubManagers(hubManagerIds);
+                    deliveryOutboxProcessor.complete(outbox.getId());
+                } catch (Exception compensationEx) {
+                    // PENDING 유지 후, 스케줄러가 재처리
+                    log.error("PENDING 유지. 스케줄러 재처리 예정. Delivery ID: {}", delivery.getId());
+                }
                 deleteDelivery(delivery.getId());
             }
             throw new BusinessException(DeliveryErrorCode.DELIVERY_CREATION_FAILED);

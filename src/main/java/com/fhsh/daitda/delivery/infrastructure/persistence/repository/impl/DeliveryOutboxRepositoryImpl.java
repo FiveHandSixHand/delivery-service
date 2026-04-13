@@ -1,44 +1,33 @@
 package com.fhsh.daitda.delivery.infrastructure.persistence.repository.impl;
 
-import com.fhsh.daitda.delivery.domain.entity.Delivery;
-import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
-import com.fhsh.daitda.delivery.infrastructure.persistence.repository.DeliveryJpaRepository;
+import com.fhsh.daitda.delivery.domain.entity.DeliveryOutbox;
+import com.fhsh.daitda.delivery.domain.enums.DeliveryOutBoxStatus;
+import com.fhsh.daitda.delivery.domain.repository.DeliveryOutboxRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class DeliveryRepositoryImpl implements DeliveryRepository {
+public class DeliveryOutboxRepositoryImpl implements DeliveryOutboxRepository{
 
-    private final DeliveryJpaRepository deliveryJpaRepository;
+    private final DeliveryOutboxJpaRepository deliveryOutboxJpaRepository;
 
     @Override
-    public Slice<Delivery> findAll(Pageable pageable) {
-        return deliveryJpaRepository.findAll(pageable);
+    public List<DeliveryOutbox> findByStatus(DeliveryOutBoxStatus status) {
+        return deliveryOutboxJpaRepository.findByStatus(status);
     }
 
     @Override
-    public Optional<Delivery> findById(UUID deliveryId) {
-        return deliveryJpaRepository.findById(deliveryId);
+    public DeliveryOutbox save(DeliveryOutbox outbox) {
+        return deliveryOutboxJpaRepository.save(outbox);
     }
 
     @Override
-    public Slice<Delivery> findByDeliveryManagerId(UUID deliveryManagerId, Pageable pageable) {
-        return deliveryJpaRepository.findByDeliveryManagerId(deliveryManagerId, pageable);
-    }
-
-    @Override
-    public Slice<Delivery> findByHubId(UUID hubId, Pageable pageable) {
-        return deliveryJpaRepository.findByHubId(hubId, pageable);
-    }
-
-    @Override
-    public Delivery save(Delivery delivery) {
-        return deliveryJpaRepository.save(delivery);
+    public Optional<DeliveryOutbox> getDeliveryOutbox(UUID outboxId) {
+        return deliveryOutboxJpaRepository.findById(outboxId);
     }
 }
