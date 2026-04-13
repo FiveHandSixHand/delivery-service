@@ -9,6 +9,7 @@ import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryStatusUpdateResult;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
+import com.fhsh.daitda.delivery.domain.entity.DeliveryOutbox;
 import com.fhsh.daitda.delivery.domain.entity.DeliveryRoute;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryStatus;
 import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
@@ -16,7 +17,9 @@ import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
 import com.fhsh.daitda.delivery.domain.state.DeliveryState;
 import com.fhsh.daitda.delivery.application.state.DeliveryStateFactory;
 import com.fhsh.daitda.exception.BusinessException;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +29,12 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DeliveryCommandService {
 
     private final DeliveryRepository deliveryRepository;
     private final DeliveryProcessor deliveryProcessor;
+    private final DeliveryOutboxProcessor deliveryOutboxProcessor;
     private final DeliveryStateFactory deliveryStateFactory;
     private final DeliveryManagerClient deliveryManagerClient;
     private final CompanyClient companyClient;
@@ -43,17 +48,36 @@ public class DeliveryCommandService {
         CompanyHubInfoResponse receiverHubResponse = companyClient.getHubIdByManagerId(command.getReceiverCompanyId());
         List<HubRouteInfoResponse> hubRouteInfoResponseList = hubClient.getHubRoutePath(supplierHubResponse.getHubId(), receiverHubResponse.getHubId());
 
-        // DB 작업
-        Delivery delivery = deliveryProcessor.createAndSave(command, supplierHubResponse, receiverHubResponse, hubRouteInfoResponseList);
+        Delivery delivery = null;
+        UUID managerId = null;
+        List<UUID> hubManagerIds = new ArrayList<>();
 
         // 담당자 배정
-        List<UUID> hubManagerIds = new ArrayList<>();
-        for (DeliveryRoute route : delivery.getDeliveryRoutes()) {
-            hubManagerIds.add(deliveryManagerClient.assignHubDeliveryManager(delivery.getId()));
-        }
-        deliveryProcessor.assignHubManagers(delivery, hubManagerIds);
-        UUID managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHubResponse.getHubId());
+        try {
+            // DB 작업
+            delivery = deliveryProcessor.createAndSave(command, supplierHubResponse, receiverHubResponse, hubRouteInfoResponseList);
 
+            for (DeliveryRoute route : delivery.getDeliveryRoutes()) {
+                hubManagerIds.add(deliveryManagerClient.assignHubDeliveryManager(delivery.getId()));
+            }
+            deliveryProcessor.assignHubManagers(delivery, hubManagerIds);
+            managerId = deliveryManagerClient.assignCompanyDeliveryManager(delivery.getId(), receiverHubResponse.getHubId());
+
+        } catch(Exception e){
+            // 매니저 배정 실패시 처리 될 로직(보상 트랜잭션)
+            if (delivery != null) {
+                DeliveryOutbox outbox = deliveryOutboxProcessor.save(hubManagerIds);
+                try {
+                    deliveryManagerClient.cancelHubManagers(hubManagerIds);
+                    deliveryOutboxProcessor.complete(outbox.getId());
+                } catch (Exception compensationEx) {
+                    // PENDING 유지 후, 스케줄러가 재처리
+                    log.error("PENDING 유지. 스케줄러 재처리 예정. Delivery ID: {}", delivery.getId());
+                }
+                deleteDelivery(delivery.getId());
+            }
+            throw new BusinessException(DeliveryErrorCode.DELIVERY_CREATION_FAILED);
+        }
         // 담당자 업데이트
         return deliveryProcessor.assignManager(delivery, managerId);
     }
@@ -73,10 +97,8 @@ public class DeliveryCommandService {
         delivery.cancel();
     }
 
-    @Transactional
     public void deleteDelivery(UUID deliveryId) {
-        Delivery delivery = getDelivery(deliveryId);
-        delivery.softDelete();
+        deliveryProcessor.deleteDelivery(deliveryId);
     }
 
     // Helper Method

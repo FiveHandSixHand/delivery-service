@@ -6,7 +6,9 @@ import com.fhsh.daitda.delivery.application.command.DeliveryCreateCommand;
 import com.fhsh.daitda.delivery.application.result.DeliveryCreateResult;
 import com.fhsh.daitda.delivery.domain.entity.Delivery;
 import com.fhsh.daitda.delivery.domain.entity.DeliveryRoute;
+import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
 import com.fhsh.daitda.delivery.domain.repository.DeliveryRepository;
+import com.fhsh.daitda.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,5 +80,17 @@ public class DeliveryProcessor {
             routes.get(i).assignManager(hubManagerIds.get(i));
         }
         deliveryRepository.save(delivery); // cascade MERGE로 routes도 같이 저장
+    }
+
+    @Transactional
+    public void deleteDelivery(UUID deliveryId) {
+        Delivery delivery = getDelivery(deliveryId);
+        delivery.softDelete();
+    }
+
+    // Helper Method
+    private Delivery getDelivery(UUID deliveryId) {
+        return deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new BusinessException(DeliveryErrorCode.NOT_FOUND_DELIVERY));
     }
 }

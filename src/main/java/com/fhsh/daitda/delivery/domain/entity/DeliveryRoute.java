@@ -2,16 +2,13 @@ package com.fhsh.daitda.delivery.domain.entity;
 
 import com.fhsh.daitda.delivery.domain.enums.DeliveryRouteStatus;
 import com.fhsh.daitda.delivery.domain.enums.HubNodeType;
-import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
 import com.fhsh.daitda.delivery.domain.vo.HubRouteInfo;
 import com.fhsh.daitda.domain.BaseUserEntity;
-import com.fhsh.daitda.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter

@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.datatransfer.Clipboard;
+import java.util.List;
 import java.util.UUID;
 
 @FeignClient(name = "delivery-manager-service")
@@ -15,4 +16,6 @@ public interface DeliveryManagerFeignClient {
     @PostMapping("/internal/v1/delivery-managers/assignments")
     CommonResponse<DeliveryManagerAssignResponse> assignDeliveryManager(@RequestBody DeliveryManagerAssignRequest request);
 
+    @PatchMapping("internal/v1/delivery-delivery/hub/cancel")
+    void cancelHubManagers(List<UUID> hubManagerIds);
 }
