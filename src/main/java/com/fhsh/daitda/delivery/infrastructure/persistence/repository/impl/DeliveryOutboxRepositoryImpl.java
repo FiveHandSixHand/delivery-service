@@ -1,6 +1,6 @@
 package com.fhsh.daitda.delivery.infrastructure.persistence.repository.impl;
 
-import com.fhsh.daitda.delivery.domain.entity.DeliveryOutbox;
+import com.fhsh.daitda.delivery.domain.entity.Outbox;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryOutBoxStatus;
 import com.fhsh.daitda.delivery.domain.repository.DeliveryOutboxRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +17,17 @@ public class DeliveryOutboxRepositoryImpl implements DeliveryOutboxRepository{
     private final DeliveryOutboxJpaRepository deliveryOutboxJpaRepository;
 
     @Override
-    public List<DeliveryOutbox> findByStatus(DeliveryOutBoxStatus status) {
+    public List<Outbox> findByStatus(DeliveryOutBoxStatus status) {
         return deliveryOutboxJpaRepository.findByStatus(status);
     }
 
     @Override
-    public DeliveryOutbox save(DeliveryOutbox outbox) {
+    public Outbox save(Outbox outbox) {
         return deliveryOutboxJpaRepository.save(outbox);
     }
 
     @Override
-    public Optional<DeliveryOutbox> getDeliveryOutbox(UUID outboxId) {
+    public Optional<Outbox> getDeliveryOutbox(UUID outboxId) {
         return deliveryOutboxJpaRepository.findById(outboxId);
     }
 }

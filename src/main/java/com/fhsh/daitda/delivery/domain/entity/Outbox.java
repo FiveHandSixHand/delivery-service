@@ -17,8 +17,8 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "p_delivery_outbox")
-public class DeliveryOutbox extends BaseUserEntity {
+@Table(name = "p_outbox")
+public class Outbox extends BaseUserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,22 +33,27 @@ public class DeliveryOutbox extends BaseUserEntity {
     DeliveryOutBoxStatus status;
 
     @Column(nullable = false)
+    String topic;
+
+    @Column(nullable = false)
     int retryCount;
 
     @Column(nullable = false)
     int maxRetryCount;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private DeliveryOutbox(List<UUID> hubManagers) {
+    private Outbox(List<UUID> hubManagers, String topic) {
         this.hubManagers = hubManagers;
+        this.topic = topic;
         this.status = DeliveryOutBoxStatus.PENDING;
         this.retryCount = 0;
         this.maxRetryCount = 3;
     }
 
-    public static DeliveryOutbox create(List<UUID> hubManagers) {
-        return DeliveryOutbox.builder()
+    public static Outbox create(List<UUID> hubManagers, String topic) {
+        return Outbox.builder()
                 .hubManagers(hubManagers)
+                .topic(topic)
                 .build();
     }
 

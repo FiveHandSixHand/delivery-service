@@ -1,6 +1,6 @@
 package com.fhsh.daitda.delivery.application.service.command;
 
-import com.fhsh.daitda.delivery.domain.entity.DeliveryOutbox;
+import com.fhsh.daitda.delivery.domain.entity.Outbox;
 import com.fhsh.daitda.delivery.domain.enums.DeliveryOutBoxStatus;
 import com.fhsh.daitda.delivery.domain.exception.DeliveryErrorCode;
 import com.fhsh.daitda.delivery.domain.repository.DeliveryOutboxRepository;
@@ -19,20 +19,28 @@ public class DeliveryOutboxProcessor {
     private final DeliveryOutboxRepository deliveryOutboxRepository;
 
     @Transactional
-    public DeliveryOutbox save(List<UUID> hubManagerIds)
+    public Outbox save(List<UUID> hubManagerIds, String topic)
     {
-        return deliveryOutboxRepository.save(DeliveryOutbox.create(hubManagerIds));
+        return deliveryOutboxRepository.save(Outbox.create(hubManagerIds, topic));
     }
 
     @Transactional
     public void complete(UUID outboxId) {
-        DeliveryOutbox deliveryOutbox = deliveryOutboxRepository.getDeliveryOutbox(outboxId)
+        Outbox deliveryOutbox = deliveryOutboxRepository.getDeliveryOutbox(outboxId)
                 .orElseThrow(() -> new BusinessException(DeliveryErrorCode.NOT_FOUND_DELIVERY_OUTBOX));
         deliveryOutbox.complete();
     }
 
+    @Transactional
+    public void fail(UUID outboxId) {
+        Outbox deliveryOutbox = deliveryOutboxRepository.getDeliveryOutbox(outboxId)
+                .orElseThrow(() -> new BusinessException(DeliveryErrorCode.NOT_FOUND_DELIVERY_OUTBOX));
+        deliveryOutbox.fail();
+    }
+
     @Transactional(readOnly = true)
-    public List<DeliveryOutbox> getDeliveryOutboxes() {
+    public List<Outbox> getDeliveryOutboxes() {
         return deliveryOutboxRepository.findByStatus(DeliveryOutBoxStatus.PENDING);
     }
+
 }

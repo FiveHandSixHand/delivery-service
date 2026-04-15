@@ -21,7 +21,6 @@ import java.util.UUID;
 public class Delivery extends BaseUserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private UUID orderId;
@@ -52,7 +51,8 @@ public class Delivery extends BaseUserEntity {
     private UUID deliveryManagerId;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Delivery(UUID orderId, UUID departureHubId, UUID destinationHubId, UUID senderTenantId, UUID receiverTenantId, String senderTenantAddress, String receiverTenantAddress, UUID receiverId, UUID senderId) {
+    private Delivery(UUID id, UUID orderId, UUID departureHubId, UUID destinationHubId, UUID senderTenantId, UUID receiverTenantId, String senderTenantAddress, String receiverTenantAddress, UUID receiverId, UUID senderId) {
+        this.id = id;
         this.orderId = orderId;
         this.departureHubId = departureHubId;
         this.destinationHubId = destinationHubId;
@@ -64,8 +64,9 @@ public class Delivery extends BaseUserEntity {
         this.senderId = senderId;
     }
 
-    public static Delivery create(UUID orderId, UUID departureHubId, UUID destinationHubId, UUID senderTenantId, UUID receiverTenantId, String senderTenantFullAddress, String receiverTenantFullAddress, UUID receiverId, UUID senderId) {
+    public static Delivery create(UUID deliveryId, UUID orderId, UUID departureHubId, UUID destinationHubId, UUID senderTenantId, UUID receiverTenantId, String senderTenantFullAddress, String receiverTenantFullAddress, UUID receiverId, UUID senderId) {
         return Delivery.builder()
+                .id(deliveryId)
                 .orderId(orderId)
                 .departureHubId(departureHubId)
                 .destinationHubId(destinationHubId)

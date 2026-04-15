@@ -1,9 +1,10 @@
 package com.fhsh.daitda.delivery.infrastructure.external.adapter;
 
 import com.fhsh.daitda.delivery.application.client.DeliveryManagerClient;
+import com.fhsh.daitda.delivery.application.service.command.DeliveryOutboxProcessor;
+import com.fhsh.daitda.delivery.domain.entity.Outbox;
 import com.fhsh.daitda.delivery.infrastructure.external.dto.DeliveryManagerAssignRequest;
 import com.fhsh.daitda.delivery.infrastructure.external.feignClient.DeliveryManagerFeignClient;
-import com.fhsh.daitda.exception.BusinessException;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class DeliveryManagerAdapter implements DeliveryManagerClient {
 
     private final DeliveryManagerFeignClient deliveryManagerFeignClient;
+    private final DeliveryOutboxProcessor deliveryOutboxProcessor;
 
     @Override
     public UUID assignHubDeliveryManager(UUID deliveryId) {

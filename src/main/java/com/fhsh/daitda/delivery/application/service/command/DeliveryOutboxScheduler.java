@@ -1,7 +1,7 @@
 package com.fhsh.daitda.delivery.application.service.command;
 
 import com.fhsh.daitda.delivery.application.client.DeliveryManagerClient;
-import com.fhsh.daitda.delivery.domain.entity.DeliveryOutbox;
+import com.fhsh.daitda.delivery.domain.entity.Outbox;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,8 +21,8 @@ public class DeliveryOutboxScheduler {
     @Scheduled(fixedDelay = 5000)
     @Transactional
     public void retryPendingOutbox() {
-        List<DeliveryOutbox> outboxList = deliveryOutboxProcessor.getDeliveryOutboxes(); //CQRS관점에서 나눠야하는건아닌지?
-        for (DeliveryOutbox outbox : outboxList) {
+        List<Outbox> outboxList = deliveryOutboxProcessor.getDeliveryOutboxes();
+        for (Outbox outbox : outboxList) {
             try{
                 deliveryManagerClient.cancelHubManagers(outbox.getHubManagers());
                 outbox.complete();
